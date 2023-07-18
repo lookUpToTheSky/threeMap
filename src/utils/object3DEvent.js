@@ -29,6 +29,9 @@ class Object3DEvent {
         this.scene = scene
         this.isRayAll = isRayAll
         this.raycaster = new Raycaster()
+        this.raycaster.layers.enable(0)
+        this.raycaster.layers.enable(1)
+        this.raycaster.layers.enable(2)
         this.mouse = new Vector2()
         Object3D.prototype.on = this.object3DEvent
         Object3D.prototype.off = this.removeEvent
@@ -84,12 +87,13 @@ class Object3DEvent {
         this.raycaster.setFromCamera(this.mouse, this.camera)
         // 计算物体和射线的焦点
         var intersects = this.raycaster.intersectObjects(list, true)
-
+        // 设置同一图层可监测
+        intersects = intersects.filter(v => v.object.layers.mask == this.camera.layers.mask)
         if (intersects.length > 0) {
             const target = intersects[0].object
             const obj = this.getEventObj(target, mousedownList)
-
             if (!!obj && obj.type === clickType) {
+                event.stopPropagation()
                 obj.callBack(obj.object, target, intersects[0].point)
             }
         }
@@ -108,30 +112,29 @@ class Object3DEvent {
 
         // 通过摄像机和鼠标位置更新射线
         this.raycaster.setFromCamera(this.mouse, this.camera)
-
         // 计算物体和射线的焦点
         var intersects = this.raycaster.intersectObjects(list, true)
-
+        // 设置同一图层可监测
+        intersects = intersects.filter(v => v.object.layers.mask == this.camera.layers.mask)
         if (intersects.length > 0) {
             const target = intersects[0].object
             const active = this.getEventObj(target, mouseHoverList)
 
             if (!!active && active.type === 'hover') {
                 if (lastObj === null || lastObj.object.uuid !== active.object.uuid) {
-                    if (lastObj !== null && lastObj.callBack1 !== undefined) lastObj.callBack1(lastObj.object, lastTarget)
+                    if (lastObj !== null && lastObj.callBack1 !== undefined) lastObj.callBack1(lastObj.object, lastTarget, intersects[0].point)
                     lastObj = active
                     lastTarget = target
-                    active.callBack(active.object, target)
+                    active.callBack(active.object, target, intersects[0].point)
                 } else if (lastObj.object.uuid !== active.object.uuid) {
-                    if (lastObj.callBack1 !== undefined) lastObj.callBack1(lastObj.object, lastTarget)
+                    if (lastObj.callBack1 !== undefined) lastObj.callBack1(lastObj.object, lastTarget, intersects[0].point)
                 }
             } else if (lastObj !== null) {
-                if (lastObj.callBack1 !== undefined) lastObj.callBack1(lastObj.object, lastTarget)
+                if (lastObj.callBack1 !== undefined) lastObj.callBack1(lastObj.object, lastTarget, intersects[0].point)
                 lastObj = null
             }
         } else if (lastObj !== null) {
             if (lastObj.callBack1 !== undefined) lastObj.callBack1(lastObj.object, lastTarget)
-
             lastObj = null
         }
     }

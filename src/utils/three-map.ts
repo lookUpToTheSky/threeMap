@@ -7,38 +7,57 @@ class THREEMAP {
     xy: [number, number] = [0, 0] //对应three中心位置下x，y
     constructor(center: [number, number], xy: [number, number]) {
         this.center = center
+        this.xy = xy
     }
-    // 经纬度转地图坐标
-    lngLatToXy(
-        lng: number,
-        lat: number,
-    ) {
-        let a, dst;
-        let north = new Vector2(0, 0);
-        let arc = 6371.393;
-        a = Math.atan(((lng - this.center[0]) / (lat - this.center[1])) * Math.cos(this.center[1]));
-        dst = ((lat - this.center[1]) * ((arc * 2 * Math.PI) / 360)) / Math.cos(a);
-        let b = north.angle() - a;
-
-        return { x: Math.sin(b) * dst + this.xy[0], y: Math.cos(b) * dst + this.xy[1] };
+    lngLatToXy(lng: number, lat: number) {
+        // 地球半径（单位：千米）
+        const radius = 637.1393;
+      
+        // 中心点经纬度
+        const centerLng = this.center[0];
+        const centerLat = this.center[1];
+      
+        // 将经纬度转换为弧度
+        const lngRad = lng * Math.PI / 180;
+        const latRad = lat * Math.PI / 180;
+        const centerLngRad = centerLng * Math.PI / 180;
+        const centerLatRad = centerLat * Math.PI / 180;
+      
+        // 计算平面坐标的x和y值
+        const x = radius * (lngRad - centerLngRad) * Math.cos(centerLatRad);
+        const y = radius * (latRad - centerLatRad);
+      
+        return { x, y };
     }
-    // 地图坐标转经纬度
-    xyToLngLat(
-        x: number,
-        y: number
-    ) {
-        let a, dst;
-        let v1 = new Vector2(this.xy[0], this.xy[1]);
-        let v2 = new Vector2(x, y);
-        let north = new Vector2(0, 1);
-        a = north.angle() - v2.clone().sub(v1).angle();
-        dst = v1.clone().distanceTo(v2);
-        let arc = 6371.393;
-        let lng = this.center[0], lat = this.center[1];
-        lng += (dst * Math.sin(-a)) / ((arc * Math.cos(lat) * 2 * Math.PI) / 360);
-        lat += (dst * Math.cos(a)) / ((arc * 2 * Math.PI) / 360);
-
+    xyToLngLat(x: number, y: number) {
+        // 地球半径（单位：千米）
+        const radius = 637.1393;
+        
+        // 中心点经纬度
+        const centerLng = this.center[0];
+        const centerLat = this.center[1];
+        
+        // 计算平面坐标系的中心点经纬度的弧度值
+        const centerLngRad = centerLng * Math.PI / 180;
+        const centerLatRad = centerLat * Math.PI / 180;
+        
+        // 计算经度和纬度的弧度值
+        const lngRad = (x / radius / Math.cos(centerLatRad)) + centerLngRad;
+        const latRad = (y / radius) + centerLatRad;
+        
+        // 将弧度值转换为经度和纬度的度数值
+        const lng = lngRad * 180 / Math.PI;
+        const lat = latRad * 180 / Math.PI;
+        
         return { lng, lat };
+    }
+    setCenter( 
+        lng: number,
+        lat: number
+    ) {
+        lng = Math.floor(lng * 1000)/1000
+        lat = Math.floor(lat * 1000)/1000
+        this.center = [lng, lat]
     }
 }
 

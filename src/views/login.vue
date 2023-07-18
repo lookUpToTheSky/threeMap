@@ -64,8 +64,8 @@ interface FormState {
 }
 
 const formState = reactive<FormState>({
-  username: "",
-  password: "",
+  username: "admin",
+  password: "12345",
   remember: true,
 })
 let router = useRouter()

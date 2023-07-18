@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { CSS3DRenderer, CSS3DSprite } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls'
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
@@ -13,11 +15,18 @@ interface SceneObj {
     renderer: THREE.WebGLRenderer;
     hemLight: THREE.HemisphereLight;
     dirLight: THREE.DirectionalLight;
-    controls: Controls
+    controls: Controls,
+    css2Render: CSS2DRenderer,
+    css3Render: CSS3DRenderer
 }
 interface Options {
     animate?: Function,
     resize?: Function,
+}
+type Position = {
+    x: number,
+    y: number,
+    z: number
 }
 type Controls = OrbitControls | FirstPersonControls | FlyControls | TrackballControls | ArcballControls
 let scene: THREE.Scene;
@@ -33,6 +42,8 @@ let resizeFunc: Function
 let clock = new THREE.Clock()
 let objEvent: any
 let stats: any
+let css3Render:any
+let css2Render:any
 // 创建场景
 const createScene = (el: HTMLElement, options?: Options): SceneObj => {
     if (options) {
@@ -44,25 +55,27 @@ const createScene = (el: HTMLElement, options?: Options): SceneObj => {
     camera = new THREE.PerspectiveCamera(
         45,
         domElemnt.clientWidth / domElemnt.clientHeight,
-        1,
-        6371.393 * 2
+        0.1,
+        6000
     );
     objEvent = new Object3DEvent(domElemnt, scene, camera)
-    renderer = new THREE.WebGL1Renderer({ 
+    renderer = new THREE.WebGLRenderer({ 
         alpha: true,
         precision:"highp", 
         antialias: true 
     });
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(domElemnt.clientWidth, domElemnt.clientHeight)
     hemLight = new THREE.HemisphereLight(0x484848, 1.0);
-    dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    dirLight.position.set(0, -200, 300);
+    dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(0, -300, 100);
     camera.position.set(0, 50, 80);
     // const axesHelper = new THREE.AxesHelper(350);
     scene.add(hemLight, dirLight);
-    controls = CreatrControls(camera, domElemnt);
     domElemnt.appendChild(renderer.domElement);
     initStats()
+    init3dTextRender(domElemnt)
+    controls = CreatrControls(camera, domElemnt);
     resizeView()
     animate()
     return {
@@ -71,7 +84,9 @@ const createScene = (el: HTMLElement, options?: Options): SceneObj => {
         renderer,
         hemLight,
         dirLight,
-        controls
+        controls,
+        css2Render,
+        css3Render,
     }
 }
 // 设置控制器
@@ -96,13 +111,45 @@ const updatedView = () => {
     TWEEN.update()
     stats.update();//这个函数真好用  
     renderer.render(scene, camera)
+    css2Render.render(scene, camera)
+    css3Render.render(scene, camera)
 }
+// 初始化文本渲染器
+const init3dTextRender = (domElemnt:HTMLElement) => {
+    css3Render = new CSS3DRenderer()
+    css3Render.domElement.style.position = 'absolute'
+    css3Render.domElement.style.zIndex = 2
+    css3Render.domElement.style.top = 0
+    css3Render.domElement.style.left = 0
+    css3Render.setSize(domElemnt.clientWidth, domElemnt.clientHeight)
+    domElemnt.appendChild(css3Render.domElement)
+
+    css2Render = new CSS2DRenderer()
+    css2Render.domElement.style.position = 'absolute'
+    css2Render.domElement.style.zIndex = 10
+    css2Render.domElement.style.top = 0
+    css2Render.setSize(domElemnt.clientWidth, domElemnt.clientHeight)
+    domElemnt.appendChild(css2Render.domElement)
+  }
+ // 设置地区文本
+ const createText = (item:{name:string, position:Position}) => {
+    const element = document.createElement('div')
+    element.className = 'city-area'
+    element.innerText = item.name
+    const css3Text = new CSS3DSprite(element)
+    const { x, y, z } = item.position
+    css3Text.position.set(x, y, z)
+    return css3Text
+  }
 // 重置视图大小
 const resizeView = () => {
     camera.aspect = domElemnt.clientWidth / domElemnt.clientHeight// 相机重置可视范围
     renderer.setSize(domElemnt.clientWidth, domElemnt.clientHeight)
     camera.updateProjectionMatrix()
     renderer.render(scene, camera)
+    css2Render.setSize(domElemnt.clientWidth, domElemnt.clientHeight)
+    css3Render.setSize(domElemnt.clientWidth, domElemnt.clientHeight)
+    renderer.sortObjects = true;
     if (resizeFunc) resizeFunc()
 }
 //动画渲染
@@ -127,6 +174,9 @@ export {
     THREE,
     TWEEN,
     Stats,
+    CSS3DSprite,
+    CSS2DObject,
     createScene,
-    clear
+    clear,
+    createText
 }

@@ -10,6 +10,7 @@
 import { Line2 } from 'three/examples/jsm/lines/Line2'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry'
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { onMounted, onUnmounted } from "vue";
 import { THREE, createScene, clear } from '@/utils/initScene'
 import {
@@ -55,7 +56,7 @@ var projection = mapvgl.MercatorProjection;
 var point1 = projection.convertLL2MC(new BMapGL.Point(114.191, 22.638));
 console.log(point1)
 let mapView = document.querySelector("#map_container")
-let textureIcon = new THREE.TextureLoader().load("/source/icon.png");
+let textureIcon = new THREE.TextureLoader().load("/source/human.png");
 // 创建box
 const createBox = () => {
   // 坐标装换
@@ -329,7 +330,7 @@ onMounted(() => {
   fetchAreaPos("/source/area.json")
   // createArea()
   // setEvent();
-  // createPalne();
+  createPalne();
   // render();
 });
 function render() {
