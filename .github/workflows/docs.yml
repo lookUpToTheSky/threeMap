@@ -32,30 +32,30 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install npm
-        id: npm-install
-        uses: npm/action-setup@v2
+      - name: Install pnpm
+        id: pnpm-install
+        uses: pnpm/action-setup@v2
         with:
           version: 7
           run_install: false
 
-      - name: Get npm store
-        id: npm-store
+      - name: Get pnpm store
+        id: pnpm-store
         shell: bash
-        run: echo "STORE_PATH=$(npm store path)" >> $GITHUB_OUTPUT
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Setup npm cache
+      - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ steps.npm-store.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-npm-store-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-npm-store-
+          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: npm i
+        run: pnpm i --frozen-lockfile
 
       - name: Build docs
-        run: npm run build
+        run: pnpm run build
 
       - name: Deploy docs
         if: ${{ github.event_name == 'push' || inputs.deploy }}

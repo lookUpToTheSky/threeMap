@@ -47,7 +47,6 @@ type Position = {
     z: number
 }
 type config = {level: string|number, moveY:number, position: {x: number, y: number, z: number}, depth:number, scale:number, size: number}
-let ControlUI = defineAsyncComponent( () => import('../components/controlUI.vue'))
 let map: THREEMAP;
 let scene: THREE.Scene;
 let camera: THREE.Camera;
