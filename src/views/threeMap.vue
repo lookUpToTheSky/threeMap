@@ -78,7 +78,6 @@ let infoElement:HTMLElement
 let activeItem:object = ref({})
 let clock = new THREE.Clock();
 let infoObj:CSS2DObject
-let textureIcon = new THREE.TextureLoader().load("/source/human.png");
 let color = [
   "#5470c6",
   "#91cc75",
@@ -354,9 +353,7 @@ async function fetchAreaPos(url: string) {
 //
 function createIcon(point: { lng: number; lat: number }) {
   let icon = new THREE.Sprite(
-    new THREE.SpriteMaterial({
-      map: textureIcon,
-    })
+    new THREE.SpriteMaterial()
   );
   var position = map.lngLatToXy(point.lng, point.lat);
   icon.position.set(position.x, position.y, 0.5);
@@ -367,10 +364,7 @@ function createPalne() {
   const planeGeo = new THREE.PlaneGeometry(150, 150, 32, 32);
   const material = new THREE.ShaderMaterial({
     uniforms: {
-      iTime: { value: 0 },
-      map: {
-        value: new THREE.TextureLoader().load("/source/map@3x.png"),
-      },
+      iTime: { value: 0 }
     },
     side: 2,
     transparent: true,
@@ -435,11 +429,11 @@ const changeItem = async () => {
   let layer = 0
   camera.position.set(0,700,800)
   switch(item.level) {
-    case 'country': basePath = '/source/map/'; layer = 0;
+    case 'country': basePath = './source/map/'; layer = 0;
       break;
-    case 'province': basePath = '/source/map/province/';layer = 1;
+    case 'province': basePath = './source/map/province/';layer = 1;
       break;
-    case 3: basePath = '/source/map/city/'; layer = 2;
+    case 3: basePath = './source/map/city/'; layer = 2;
       break;
   }
   camera.layers.set(layer)
@@ -526,7 +520,7 @@ onMounted(() => {
   controls.maxPolarAngle = Math.PI / 2;
   controls.enableDamping = true;
   controls.dampingFactor = 0.3;
-  getMapData("/source/map/china-aliyun.json", 0);
+  getMapData("./source/map/china-aliyun.json", 0);
   window.addEventListener('dblclick', goHome)
   // 信息文本
   infoElement = document.querySelector('.point-note')

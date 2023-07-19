@@ -12,7 +12,7 @@ export const fetchJson = async (url: string) => {
   }
 
 export const getAreaList = async () => {
-    const data = await fetch('/source/area/china.json').then(async (res) => {
+    const data = await fetch('./source/area/china.json').then(async (res) => {
       return await res.json()
     })
     return data

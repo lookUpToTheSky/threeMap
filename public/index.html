@@ -9,12 +9,32 @@
     <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
     <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      .loading-bg {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgb(198, 219, 240);
+        font-size: 14px;
+        background: url('~@/assets/image/bg.png'), radial-gradient(circle, rgb(27, 53, 106) 5%, #000 76%);
+      }
+    </style>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <div class="loading-bg">
+        第一次加载较慢！敬请稍后...
+      </div>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

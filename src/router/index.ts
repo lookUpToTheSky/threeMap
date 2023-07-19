@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-06-30 09:27:02
  * @Description: 
  */
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import login from '../views/login.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -14,10 +14,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'login',
     component: login
   },{
-    path: '/home',
-    name: 'home',
-    component: () => import('../views/homeView.vue')
-  },{
     path: '/map',
     name: 'map',
     component: () => import('../views/threeMap.vue')
@@ -25,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes
 })
 
