@@ -1,7 +1,6 @@
 <template>
   <div class="three-view">
     <div id="scene-view"></div>
-    <!-- <ControlUI v-if="loading" @changeItem="changeItem" class="controlUI"></ControlUI> -->
     <!-- 信息框 -->
     <div class="point-note" v-show="noteShow">
       <div class="trangle"></div>
@@ -12,14 +11,6 @@
             <div class="point-note-detail"></div>
           </div>
         </div>
-        <ul class="info-content">
-          <!-- <li v-for="item in showNodeData" :key="item.id">
-            <span class="name">{{ item.displayName }}</span>
-            <span class="value"
-              >{{ item.dataValue }}<span class="unit">{{ item.dataUnit }}</span></span
-            >
-          </li> -->
-        </ul>
       </div>
     </div>
   </div>
