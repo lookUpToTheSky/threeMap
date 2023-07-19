@@ -103,18 +103,6 @@ async function getMapData(url: string, layer:number) {
   if(!data) return
   let uvs:Array<number>=[]
   // 将Sgeo转换回Shape
-  // const texture = new THREE.TextureLoader().load('/source/manshe_h.png');
-  // const Bumptexture = new THREE.TextureLoader().load('/source/dem.png');
-  // let Normaltexture = new THREE.TextureLoader().load('/source/normal.png');
-  // texture.wrapS = THREE.RepeatWrapping;
-  // texture.wrapT = THREE.RepeatWrapping;
-  // const repeatX = 0.9;
-  // const repeatY = 0.5;
-  // texture.repeat.set(repeatX, repeatY);
-  // const offsetX = (1 - repeatX)/2;
-  // const offsetY = (1 - repeatY)/2 + 0.01;
-  // texture.offset.set(offsetX, offsetY);
-
   const meshGroup: THREE.Group = new THREE.Group();
   let temp = data.features || data.geometries
   temp.forEach((item: any, index: number) => {
